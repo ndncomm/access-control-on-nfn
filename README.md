@@ -1,11 +1,10 @@
 # Access control for NDN with Named Function Networking (NFN)
 
-![Gatekeeper icon](gatekeeper.png)
-
-This projects adds an access control system to NDN. It relies on a
-exsting "gatekeeper" implementation that sits between the client and the
-requested target. "Target" in this case can be either pre-published data
-or a data-on-demand service (= named function). The gatekeeper generates
+![Gatekeeper icon](gatekeeper.png) This projects adds an access
+control system to NDN. It relies on an existing "gatekeeper"
+implementation that sits between the client and the requested
+target. "Target" in this case can be either pre-published data or a
+data-on-demand service (= named function). The gatekeeper generates
 and handouts a decryption key to authorized clients.
 
 With this project we explore
@@ -13,6 +12,7 @@ With this project we explore
 - how easy (for the client) it is to submit to the producer-imposed access control, also via NDN
 - how easy it is to write custom access controllers inside the gatekeeper
 
+See the slide deck used to advertize this project ([Powerpoint](doc/access-ctrl-w-NFN.pptx)).
 
 
 ## First phase (Saturday): Access control for echo() service
