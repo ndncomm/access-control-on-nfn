@@ -10,7 +10,7 @@ Goal: To let an app written in NDN-js (client) request a decryption
 key for a specific named service, in this case a simple echo, and then
 invoke that service.
 
-Achievment of Saturday: Everybody is on the same page, agreement on
+Achievement of Saturday: Everybody is on the same page, agreement on
 implementation plan and division of labor. Summary of the design:
 
 We align with Marxer's schema and the three "channels" needed for
@@ -19,7 +19,7 @@ content channel. However, we simplify the "security dance" and combine
 permission and key channel.
 
 In a first phase, the permission granting and key creating entity
-(gatekeeper) is colocated with the content generating entity. This
+(gatekeeper) is co-located with the content generating entity. This
 permits to share the generated content encryption keys via the local
 file system.
 
@@ -82,4 +82,5 @@ Candidate targets:
 
 - use the Gatekeeper protocol to secure access to NFN
 
-> eof
+----
+
