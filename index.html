@@ -28,8 +28,106 @@
     <div id="content-wrapper">
       <div class="inner clearfix">
         <section id="main-content">
-          <h2>
-<a id="test" class="anchor" href="#test" aria-hidden="true"><span class="octicon octicon-link"></span></a>test</h2>
+          <h1>
+<a id="access-control-for-ndn-with-named-function-networking-nfn" class="anchor" href="#access-control-for-ndn-with-named-function-networking-nfn" aria-hidden="true"><span class="octicon octicon-link"></span></a>Access control for NDN with Named Function Networking (NFN)</h1>
+
+<p><img src="gatekeeper.png" alt="Gatekeeper icon"> This projects adds an access
+control system to NDN. It relies on an existing "gatekeeper"
+implementation that sits between the client and the requested
+target. "Target" in this case can be either pre-published data or a
+data-on-demand service (= named function). The gatekeeper generates
+and handouts a decryption key to authorized clients.</p>
+
+<p>With this project we explore</p>
+
+<ul>
+<li>how easy it is to publish a function accessible to NDN clients</li>
+<li>how easy (for the client) it is to submit to the producer-imposed access control, also via NDN</li>
+<li>how easy it is to write custom access controllers inside the gatekeeper</li>
+</ul>
+
+<p>See the slide deck used to advertize this project (<a href="doc/access-ctrl-w-NFN.pptx">Powerpoint</a>).</p>
+
+<h2>
+<a id="first-phase-saturday-access-control-for-echo-service" class="anchor" href="#first-phase-saturday-access-control-for-echo-service" aria-hidden="true"><span class="octicon octicon-link"></span></a>First phase (Saturday): Access control for echo() service</h2>
+
+<p>Goal: To let an app written for NDN-js (client) request a decryption
+key for a specific named service, in this case a simple echo, and then
+invoke that service. Access control will be based on the identity of
+the client.</p>
+
+<p>Achievement of Saturday: Everybody is on the same page, agreement on
+implementation plan and division of labor. Summary of the design:</p>
+
+<p>We align with Marxer's schema and the three "channels" needed for
+access control: a) permission granting channel, b) key provisioning channel,
+c) content channel. However, we simplify the "security dance" and combine
+a+b) permission and key channel.</p>
+
+<p>In a first phase, the permission granting and key generating entity
+(gatekeeper) is co-located with the content producing entity. This
+permits to share the generated content encryption keys via the local
+file system.</p>
+
+<p>System Architecture:</p>
+
+<p><img src="sys-arch.png" alt="System architecture"></p>
+
+<p>Mangled name format for requesting permission and retrieving the decryption key:</p>
+
+<pre><code>I: /service-provider-prefix/echo/p/&lt;keyname&gt;/NFN
+D: /service-provider-prefix/echo/p/&lt;keyname&gt;/NFN
+   payload = base64(asymencr(pubkey_keyname, encryptionKey))
+</code></pre>
+
+<p>Mangled name format for requesting service invocation:</p>
+
+<pre><code>I: /service-provider-prefix/echo/c/&lt;keyname, msg&gt;/NFN
+D: /service-provider-prefix/echo/c/&lt;keyname, msg&gt;/NFN
+   payload = symencr(encryptionKey, msg))
+</code></pre>
+
+<p>Discussion:</p>
+
+<p>Shouldn't the "p" and "c" component come before the service name? Like in</p>
+
+<pre><code>I: /service-provider-prefix/c/echo/&lt;params&gt;/NFN
+  or
+I: /service-provider-prefix/c/lambda/&lt;expr&gt;/NFN
+  or
+I: /service-provider-prefix/c/datalog/&lt;expr&gt;/NFN
+  etc
+</code></pre>
+
+<h2>
+<a id="second-phase-to-be-discussed-sunday" class="anchor" href="#second-phase-to-be-discussed-sunday" aria-hidden="true"><span class="octicon octicon-link"></span></a>Second phase (to be discussed Sunday)</h2>
+
+<p>Candidate targets:</p>
+
+<ul>
+<li> implement a content-dependend access rule e.g., threshold (which cannot be expressed at the name level)</li>
+<li> store data-decryption keys in the NDN memory fabric. This has the benefit that content access is possible even if the gatekeeper crashes and cannot remember the assigned data decryption keys.</li>
+</ul>
+
+<h2>
+<a id="demos" class="anchor" href="#demos" aria-hidden="true"><span class="octicon octicon-link"></span></a>Demos</h2>
+
+<p>Candidate targets:</p>
+
+<ul>
+<li>demonstrate access-controlled execution of lambda expression reduction</li>
+<li>demonstrate chaining of access-controlled data filtering</li>
+<li>demonstrate mapping of access control to database query rights</li>
+</ul>
+
+<h2>
+<a id="lessons-learned" class="anchor" href="#lessons-learned" aria-hidden="true"><span class="octicon octicon-link"></span></a>Lessons learned</h2>
+
+<ul>
+<li>use the Gatekeeper protocol to secure access to NFN</li>
+</ul>
+
+<hr>
         </section>
 
         <aside id="sidebar">
