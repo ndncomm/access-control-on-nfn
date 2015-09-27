@@ -1,0 +1,160 @@
+<?xml version = "1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"DTD/xhtml1-strict.dtd">
+<!--
+ * Copyright (C) 2014-2015 Regents of the University of California.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * A copy of the GNU Lesser General Public License is in the file COPYING.
+
+ 2015-09-27  copied from test-get-async.html
+
+-->
+<html xmlns = "http://www.w3.org/1999/xhtml">
+<meta charset="UTF-8">
+
+<head>
+  <title>Gatekeeper Demo via WebSocket</title>
+
+  <script type="text/javascript" src="ndn.js"></script>
+  <script src="http://crypto-js.googlecode.com/svn/tags/3.1.2/build/rollups/aes.js"></script>
+
+  <!--
+  <script>
+    <script src="http://crypto-js.googlecode.com/svn/tags/3.1.2/build/rollups/aes.js"></script>
+<script>
+    var key = CryptoJS.enc.Hex.parse('000102030405060708090a0b0c0d0e0f');
+    var iv  = CryptoJS.enc.Hex.parse('101112131415161718191a1b1c1d1e1f');
+
+    var encrypted = CryptoJS.AES.encrypt("Message", key, { iv: iv });
+</script>
+
+    var encrypted = CryptoJS.AES.encrypt("Message", "Secret Passphrase");
+    var decrypted = CryptoJS.AES.decrypt(encrypted, "Secret Passphrase");
+</script>
+-->
+
+  <script type="text/javascript">
+    var targetIP = "131.179.142.71";
+    var targetPort = 9696;
+    /*
+    var targetIP = "memoria.ndn.ucla.edu";
+    var targetPort = 9696;
+    */
+    var face = new Face({host: targetIP, port: targetPort});
+    var cnt = 1;
+    var myKey = CryptoJS.enc.Hex.parse('000102030405060708090a0b0c0d0e0f');
+
+
+    function appendEchoRequest()
+    {
+      console.log("appendEchoRequest called.");
+      b = document.getElementById('body');
+      b.innerHTML += '<h2>Content phase (' + cnt.toString() + ')</h2>\n';
+      b.innerHTML += '<form >Interest = <input id="interest' + cnt.toString()
+           + '" type="text" name="interest' + cnt.toString()
+           + '" size="100" style="font-family: Courier;"'
+           + 'value="/ndn/hackaton2015/call 2 echo_c 0x00MYKEYID00/NFN" />'
+           + '</form><br>'
+           + '<button id="testBtn" onclick="run()">Send interest</button>\n';
+      b.innerHTML += '<p>Content received:<div id="content' + cnt.toString()
+           + '" style="font-family: Courier;padding-left: 20px;"></div></p>\n<hr>\n';
+
+      window.scrollTo(0,document.body.scrollHeight);
+    }
+        
+    function str2ab(str)
+    {
+      buf = new ArrayBuffer(str.length);
+      buf[i] = str.charCodeAt(i);
+      console.log("T: " + typeof(buf));
+     return buf;
+    }
+                                             
+    function onData(interest, data)
+    {
+      console.log("onData called.");
+      console.log("Host: " + face.connectionInfo.toString());
+      nameStr = escape(data.getName().toUri());
+      c = document.getElementById('content' + cnt.toString());
+      c.innerHTML += "<p>Name string: " + nameStr + "</p>";
+      if (cnt == 1) { /* first we get the key */
+        c.innerHTML += "<p>Content buffer length: " + data.getContent().size() + "</p>";
+        c.innerHTML += "<p>Raw content: " + data.getContent() + "</p>";
+        myKey = atob(data.getContent());
+        /*
+        myKey = DataUtils.base64toString(data.getContent());
+        myKey = str2ab(atob(data.getContent()));
+        */
+        c.innerHTML += "<p>Key: " + myKey + "</p>";
+      } else {
+        c.innerHTML += "<p>Content buffer length: " + data.getContent().size() + "</p>";
+        c.innerHTML += "<p>Raw content: " + data.getContent() + "</p>";
+        cipherBytes = atob(data.getContent());
+        clearContent = CryptoJS.AES.decrypt(cipherBytes, myKey);
+        c.innerHTML += "<p>type: " + typeof(clearContent) + "</p>";
+        c.innerHTML += "<p>Decrypted: " + clearContent + "</p>";
+        -->
+      }
+      cnt++;
+      appendEchoRequest();
+    }
+
+    function onTimeout(interest)
+    {
+      console.log("onTimeout called. Re-expressing the interest.");
+      console.log("Host: " + face.connectionInfo.toString());
+      face.expressInterest(interest, onData, onTimeout);
+    }
+
+    function run()
+    {
+      var name = "interest" + cnt.toString();
+      face.expressInterest(new Name(document.getElementById(name).value), onData, onTimeout);
+    }
+
+  </script>
+
+</head>
+<body style="font-family: Helvetica;" id=body>
+
+  <table><tr>
+      <td align=bottom><img src="gatekeeper.png"></td>
+      <td>&nbsp;&nbsp;</td>
+      <td valign=bottom width=100%>
+        Talk to the remote Scala+NFN+ccn-lite runtime<br>
+          (via NFD through websocket with IP address
+          <script type="text/javascript">
+            document.write(targetIP + "/" + targetPort);
+          </script>):</td>
+      <td valign=top>
+        <button onclick="location.reload()">Reload</button><br /><br>
+      </tr>
+  </table>
+  <hr>
+        
+  <h2>Permission phase</h2>            
+  <form >
+    Interest = <input id="interest1" type="text"
+           name="interest1" size="100" style="font-family: Courier;"
+           value="/ndn/hackaton2015/call 2 echo_p 0x00MYKEYID00/NFN" />
+  </form><br>
+
+  <button id="testBtn" onclick="run()">Send interest</button>
+
+  <p>
+    Content received:<div id="content1" style="font-family: Courier;padding-left: 20px;"></div>
+  </p>
+
+  <hr>
