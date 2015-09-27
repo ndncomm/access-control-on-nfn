@@ -50,5 +50,16 @@ I: /service-provider-prefix/c/datalog/<expr>/NFN
 
 ## Second phase
 
+candidates:
+
+  store data-decryption keys in the NDN memory fabric
+
+## Demo
+
+candidates:
+
+  demonstrate access-controlled execution of lambda reduction
+  demonstrate chaining of access-controlled data filtering
+
 
 > eof
