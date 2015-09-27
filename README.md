@@ -4,7 +4,7 @@ This projects adds an access control system to NDN that permits to
 hand out individual decryption keys to clients.
 
 
-== First phase (Saturday): Access control for echo()
+## First phase (Saturday): Access control for echo()
 
 Goal: To let an app written in NDN-js (client) request a decryption
 key for a specific named service, in this case a simple echo, and then
@@ -48,7 +48,7 @@ I: /service-provider-prefix/c/datalog/<expr>/NFN
   etc
 ~~~
 
-== Second phase
+## Second phase
 
 
 > eof
