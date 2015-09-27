@@ -61,21 +61,17 @@ I: /service-provider-prefix/c/datalog/<expr>/NFN
 
 Candidate targets:
 
-~~~
-  implement a content-specific access rules e.g., threshold (which cannot be expressed at the name level)
-  store data-decryption keys in the NDN memory fabric. This has the benefit that content access is possible even if the gatekeeper crashes and cannot remember the assigned data decryption key.
-~~~
+-  implement a content-specific access rules e.g., threshold (which cannot be expressed at the name level)
+-  store data-decryption keys in the NDN memory fabric. This has the benefit that content access is possible even if the gatekeeper crashes and cannot remember the assigned data decryption key.
 
 
 ## Demos
 
 Candidate targets:
 
-~~~
-  demonstrate access-controlled execution of lambda reduction
-  demonstrate chaining of access-controlled data filtering
-  demonstrate mapping of access control to database query rights
-~~~
+- demonstrate access-controlled execution of lambda reduction
+- demonstrate chaining of access-controlled data filtering
+- demonstrate mapping of access control to database query rights
 
 
 ## Lessons learned
