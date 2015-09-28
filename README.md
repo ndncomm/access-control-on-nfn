@@ -1,11 +1,14 @@
 # Access control for NDN with Named Function Networking (NFN)
 
-![Gatekeeper icon](gatekeeper.png) This projects adds an access
-control system to NDN. It relies on an existing "gatekeeper"
-implementation that sits between the client and the requested
-target. "Target" in this case can be either pre-published data or a
-data-on-demand service (= named function). The gatekeeper generates
-and handouts a decryption key to authorized clients.
+![Gatekeeper icon](gatekeeper.png)
+Protecting the access to named data and named functions
+
+This projects adds an access control system to NDN. It relies on an
+existing "gatekeeper" implementation that sits between the client and
+the requested target. "Target" in this case can be either
+pre-published data or a data-on-demand service (= named function). The
+gatekeeper generates and handouts a decryption key to authorized
+clients.
 
 With this project we explore
 - how easy it is to publish a function accessible to NDN clients
@@ -15,7 +18,7 @@ With this project we explore
 See the slide deck used to advertize this project ([Powerpoint](doc/access-ctrl-w-NFN.pptx)).
 
 
-## First phase (Saturday): Access control for echo() service
+## First phase (Saturday): Access control for an echo() service
 
 Goal: To let an app written for NDN-js (client) request a decryption
 key for a specific named service, in this case a simple echo, and then
@@ -69,7 +72,33 @@ I: /service-provider-prefix/c/datalog/<expr>/NFN
 ~~~
 
 
-## Second phase (to be discussed Sunday)
+## Second phase (Sunday)
+
+Revision of the name mangling: In order to avoid introducing a
+name-rewriting engine, it was decided to expose for the time being the
+NFN-specific way of calling the named function:
+
+~~~
+I: /service-provider-prefix/call 2 echo_p <keyname>/NFN
+  and
+I: /service-provider-prefix/call 2 echo_c <keyname> <msg>/NFN
+~~~
+
+What works:
+- serving permission+key requests, including access right lookup but without asym enryption of the returned key
+- serving echo() requests, using the generated key
+- splitting the gatekeeper work in a access controler and a content controler
+
+What does not work yet:
+- the web client
+- the GitHub pages
+
+Difficulties encountered:
+- Web-based NDN application cannot directly send UDP datagrams (towards ccn-lite), hence use web sockets, hence interpose an NFD relay. Now NFD in Ubuntu packages produces core dumps, so compile form sources.
+- The new chat app is too complex to take as a starting point. Instead, use test0get-asynch.html
+- No support for symmetric encryption in ndn.js (for decrypting results)
+
+## Future work
 
 Candidate targets:
 
